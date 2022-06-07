@@ -1,34 +1,35 @@
 ﻿using NUnit.Framework;
-using Ranking_Sortable_Poker_Hands;
 
-[TestFixture]
-public class RankingPokerTests
+namespace Ranking_Sortable_Poker_Hands
 {
-    [TestCase("Highest straight flush wins", Result.Loss, "2H 3H 4H 5H 6H", "KS AS TS QS JS")]
-    [TestCase("Straight flush wins of 4 of a kind", Result.Win, "2H 3H 4H 5H 6H", "AS AD AC AH JD")]
-    [TestCase("Highest 4 of a kind wins", Result.Win, "AS AH 2H AD AC", "JS JD JC JH 3D")]
-    [TestCase("4 Of a kind wins of full house", Result.Loss, "2S AH 2H AS AC", "JS JD JC JH AD")]
-    [TestCase("Full house wins of flush", Result.Win, "2S AH 2H AS AC", "2H 3H 5H 6H 7H")]
-    [TestCase("Highest flush wins", Result.Win, "AS 3S 4S 8S 2S", "2H 3H 5H 6H 7H")]
-    [TestCase("Flush wins of straight", Result.Win, "2H 3H 5H 6H 7H", "2S 3H 4H 5S 6C")]
-    [TestCase("Equal straight is tie", Result.Tie, "2S 3H 4H 5S 6C", "3D 4C 5H 6H 2S")]
-    [TestCase("Straight wins of three of a kind", Result.Win, "2S 3H 4H 5S 6C", "AH AC 5H 6H AS")]
-    [TestCase("3 Of a kind wins of two pair", Result.Loss, "2S 2H 4H 5S 4C", "AH AC 5H 6H AS")]
-    [TestCase("2 Pair wins of pair", Result.Win, "2S 2H 4H 5S 4C", "AH AC 5H 6H 7S")]
-    [TestCase("Highest pair wins", Result.Loss, "6S AD 7H 4S AS", "AH AC 5H 6H 7S")]
-    [TestCase("Pair wins of nothing", Result.Loss, "2S AH 4H 5S KC", "AH AC 5H 6H 7S")]
-    [TestCase("Highest card loses", Result.Loss, "2S 3H 6H 7S 9C", "7H 3C TH 6H 9S")]
-    [TestCase("Highest card wins", Result.Win, "4S 5H 6H TS AC", "3S 5H 6H TS AC")]
-    [TestCase("Equal cards is tie", Result.Tie, "2S AH 4H 5S 6C", "AD 4C 5H 6H 2C")]
-    public void PokerHandTest(string description, Result expected, string hand, string opponentHand)
+    [TestFixture]
+    public class RankingPokerTests
     {
-        Assert.AreEqual(expected, new PokerHand(hand).CompareWith(new PokerHand(opponentHand)), description);
-    }
+        [TestCase("Highest straight flush wins", Result.Loss, "2H 3H 4H 5H 6H", "KS AS TS QS JS")]
+        [TestCase("Straight flush wins of 4 of a kind", Result.Win, "2H 3H 4H 5H 6H", "AS AD AC AH JD")]
+        [TestCase("Highest 4 of a kind wins", Result.Win, "AS AH 2H AD AC", "JS JD JC JH 3D")]
+        [TestCase("4 Of a kind wins of full house", Result.Loss, "2S AH 2H AS AC", "JS JD JC JH AD")]
+        [TestCase("Full house wins of flush", Result.Win, "2S AH 2H AS AC", "2H 3H 5H 6H 7H")]
+        [TestCase("Highest flush wins", Result.Win, "AS 3S 4S 8S 2S", "2H 3H 5H 6H 7H")]
+        [TestCase("Flush wins of straight", Result.Win, "2H 3H 5H 6H 7H", "2S 3H 4H 5S 6C")]
+        [TestCase("Equal straight is tie", Result.Tie, "2S 3H 4H 5S 6C", "3D 4C 5H 6H 2S")]
+        [TestCase("Straight wins of three of a kind", Result.Win, "2S 3H 4H 5S 6C", "AH AC 5H 6H AS")]
+        [TestCase("3 Of a kind wins of two pair", Result.Loss, "2S 2H 4H 5S 4C", "AH AC 5H 6H AS")]
+        [TestCase("2 Pair wins of pair", Result.Win, "2S 2H 4H 5S 4C", "AH AC 5H 6H 7S")]
+        [TestCase("Highest pair wins", Result.Loss, "6S AD 7H 4S AS", "AH AC 5H 6H 7S")]
+        [TestCase("Pair wins of nothing", Result.Loss, "2S AH 4H 5S KC", "AH AC 5H 6H 7S")]
+        [TestCase("Highest card loses", Result.Loss, "2S 3H 6H 7S 9C", "7H 3C TH 6H 9S")]
+        [TestCase("Highest card wins", Result.Win, "4S 5H 6H TS AC", "3S 5H 6H TS AC")]
+        [TestCase("Equal cards is tie", Result.Tie, "2S AH 4H 5S 6C", "AD 4C 5H 6H 2C")]
+        public void PokerHandTest(string description, Result expected, string hand, string opponentHand)
+        {
+            Assert.AreEqual(expected, new PokerHand(hand).CompareWith(new PokerHand(opponentHand)), description);
+        }
 
-    [Test]
-    public void RandomizedTest()
-    {
-        var hands = new List<string>
+        [Test]
+        public void RandomizedTest()
+        {
+            var hands = new List<string>
         {
             "4S 3H 2C 7S 5H",
             "9D 8H 2C 6S 7H",
@@ -69,15 +70,16 @@ public class RankingPokerTests
             "JH 9H TH KH QH", // straigh flush
             "JH AH TH KH QH", // royal flush
         };
-        var random = new Random((int)DateTime.Now.Ticks);
-        for (var i = 0; i < 20000; i++)
-        {
-            var playerIndex = random.Next(0, hands.Count);
-            var opponentIndex = random.Next(0, hands.Count);
-            var hand = new PokerHand(hands[playerIndex]);
-            var handOpponent = new PokerHand(hands[opponentIndex]);
-            var expected = playerIndex > opponentIndex ? Result.Win : playerIndex < opponentIndex ? Result.Loss : Result.Tie;
-            Assert.AreEqual(expected, hand.CompareWith(handOpponent), "Player hand: {0}, Opponent hand: {1}", hands[playerIndex], hands[opponentIndex]);
+            var random = new Random((int)DateTime.Now.Ticks);
+            for (var i = 0; i < 20000; i++)
+            {
+                var playerIndex = random.Next(0, hands.Count);
+                var opponentIndex = random.Next(0, hands.Count);
+                var hand = new PokerHand(hands[playerIndex]);
+                var handOpponent = new PokerHand(hands[opponentIndex]);
+                var expected = playerIndex > opponentIndex ? Result.Win : playerIndex < opponentIndex ? Result.Loss : Result.Tie;
+                Assert.AreEqual(expected, hand.CompareWith(handOpponent), "Player hand: {0}, Opponent hand: {1}", hands[playerIndex], hands[opponentIndex]);
+            }
         }
     }
 }

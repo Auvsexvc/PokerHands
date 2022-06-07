@@ -1,10 +1,12 @@
 ﻿using NUnit.Framework;
-using Ranking_Sortable_Poker_Hands;
 
-[TestFixture]
-public class SortablePokerTests
+namespace Ranking_Sortable_Poker_Hands
 {
-    private List<string> _hands = new List<string> {
+    [TestFixture]
+    public class SortablePokerTests
+    {
+        private readonly List<string> _hands = new()
+        {
                 "JH AH TH KH QH", // royal flush
                 "JH 9H TH KH QH", // straight flush
                 "5C 6C 3C 7C 4C", // straight flush
@@ -46,10 +48,10 @@ public class SortablePokerTests
                 "9D 8H 2C 6S 7H",
                 "4S 3H 2C 7S 5H" };
 
-    [Test]
-    public void PokerHandSortTest()
-    {
-        var expected = new List<PokerHand> {
+        [Test]
+        public void PokerHandSortTest()
+        {
+            var expected = new List<PokerHand> {
             new PokerHand("KS AS TS QS JS"),
             new PokerHand("2H 3H 4H 5H 6H"),
             new PokerHand("AS AD AC AH JD"),
@@ -66,24 +68,25 @@ public class SortablePokerTests
             new PokerHand("2S AH 4H 5S KC"),
             new PokerHand("2S 3H 6H 7S 9C")
         };
-        var random = new Random((int)DateTime.Now.Ticks);
-        var actual = expected.OrderBy(x => random.Next()).ToList();
-        actual.Sort();
-        for (var i = 0; i < expected.Count; i++)
-            Assert.AreEqual(expected[i], actual[i], "Unexpected sorting order at index {0}", i);
-    }
-
-    [Test]
-    public void RandomizedTest()
-    {
-        var random = new Random((int)DateTime.Now.Ticks);
-        var expected = _hands.Select(x => new PokerHand(x)).ToList();
-        for (var i = 0; i < 25000; i++)
-        {
-            var actual = expected.OrderBy(x => random.Next()).ToList();
+            var random = new Random((int)DateTime.Now.Ticks);
+            var actual = expected.OrderBy(_ => random.Next()).ToList();
             actual.Sort();
-            for (var j = 0; j < expected.Count; j++)
-                Assert.AreEqual(expected[j], actual[j], "Unexpected sorting order found at index {0}", j);
+            for (var i = 0; i < expected.Count; i++)
+                Assert.AreEqual(expected[i], actual[i], "Unexpected sorting order at index {0}", i);
+        }
+
+        [Test]
+        public void RandomizedTest()
+        {
+            var random = new Random((int)DateTime.Now.Ticks);
+            var expected = _hands.ConvertAll(x => new PokerHand(x));
+            for (var i = 0; i < 25000; i++)
+            {
+                var actual = expected.OrderBy(_ => random.Next()).ToList();
+                actual.Sort();
+                for (var j = 0; j < expected.Count; j++)
+                    Assert.AreEqual(expected[j], actual[j], "Unexpected sorting order found at index {0}", j);
+            }
         }
     }
 }
